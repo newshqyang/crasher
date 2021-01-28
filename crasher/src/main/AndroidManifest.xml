@@ -2,8 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="io.ysq.crasher">
 
-    <application
-        android:name=".App">
+    <application>
         <activity android:name=".view.log.LogActivity"/>
     </application>
 
