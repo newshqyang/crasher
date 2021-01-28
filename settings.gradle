@@ -1,0 +1,2 @@
+include ':crasher'
+rootProject.name = "My Crasher"
