@@ -3,28 +3,31 @@ package io.ysq.crasher.view.log
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import android.os.Bundle
-import android.widget.Button
-import android.widget.TextView
+import android.view.View
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import io.ysq.crasher.R
+import io.ysq.crasher.databinding.LogActivityBinding
+import io.ysq.crasher.view.base.BaseActivity
+import io.ysq.crasher.view.log.viewmodel.LogViewModel
+import org.koin.android.viewmodel.ext.android.viewModel
 
-
-class LogActivity : AppCompatActivity() {
+class LogActivity : BaseActivity<LogActivityBinding>() {
 
     private val esError by lazy {
         intent?.extras?.getString("log")
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.log_activity)
+    private val mViewModel: LogViewModel by viewModel()
 
-        findViewById<TextView>(R.id.error_tv).text = esError
-
-        findViewById<Button>(R.id.copy_btn).setOnClickListener {
-            copy2clip()
+    override fun initView() {
+        mBinding.apply {
+            vm = mViewModel
+            presenter = this@LogActivity
+        }
+    }
+    override fun onClick(v: View) {
+        when (v.id) {
+            R.id.copy_btn -> copy2clip()
         }
     }
 
@@ -34,6 +37,12 @@ class LogActivity : AppCompatActivity() {
         val cd = ClipData.newPlainText("崩溃信息", esError)
         cm.setPrimaryClip(cd)
         Toast.makeText(this, "已复制", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun getLayoutId() = R.layout.log_activity
+
+    override fun loadDate(isRefresh: Boolean) {
+        mViewModel.error.set(esError)
     }
 
     override fun onBackPressed() {
